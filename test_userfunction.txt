@@ -1,0 +1,134 @@
+<?php
+
+    require_once "connection.php";  //1回connectしたら違うページに行っても継続
+
+
+    //function register()
+    function register(){
+        $conn = connection();
+
+        //form data
+        $first_name = $_POST['first_name'];
+        $last_name = $_POST['last_name'];
+        $address = $_POST['address'];
+        $contact_number = $_POST['contact_number'];
+        $username = $_POST['username'];
+        $password = password_hash($_POST['password'], PASSWORD_DEFAULT);
+        $avatar = "profile.jpg";
+
+        //sql accounts table
+        $sql_accounts = "INSERT INTO accounts(username, `password`) VALUES('$username', '$password')";
+
+        if($conn->query($sql_accounts)){
+            $account_id = $conn->insert_id;  //insert_id will help us get the last id generated in the previous sql table, account_id now holds the last id
+
+            //sql users table
+            $sql_users = "INSERT INTO users(first_name, last_name, `address`, contact_number, avatar, account_id) VALUES('$first_name', '$last_name', '$address', '$contact_number', '$avatar', '$account_id')";
+
+            if($conn->query($sql_users)){
+                header("location: login.php");
+                exit;
+            }else{
+                die("Error inserting to users table: " . $conn->error);
+            }
+        }else{
+            die("Error inserting to accounts table: " . $conn->error);
+        }
+    }  //END
+
+
+
+    //function login()
+    function login(){
+        $conn = connection();
+
+        //form data
+        $username = $_POST['username'];
+        $password = $_POST['password'];
+
+        //varaible for error
+        $error = "<div class = 'alert alert-danger text-center fw-bold' role='alert'>Incorrect Username or Password</div>";
+
+        $sql = "SELECT * FROM accounts WHERE username = '$username'";
+
+        if($result = $conn->query($sql)){
+            if($result->num_rows == 1){
+                $user_details = $result->fetch_assoc();
+                if(password_verify($password, $user_details['password'])){
+                    session_start();
+                    $_SESSION['account_id'] = $user_details['account_id'];
+                    $_SESSION['role'] = $user_details['role'];
+                    $_SESSION['full_name'] = getFullname($user_details['account_id']); //matchしなくてもvariableの数が同じであればOK
+
+                    if($user_details['role'] == 'A'){
+                        header("location: dashboard.php");
+                    }elseif($user_details['role'] == 'U'){
+                        header("location: profile.php");
+                    }
+                    exit;
+                }else{
+                    echo $error;
+                }
+            }else{
+                echo $error;
+            }
+        }else{
+            die("Error: " . $conn->error);
+        }
+    
+    }
+
+
+
+    //function getFullname()
+    function getFullname($account_id){
+        $conn = connection();
+
+        $sql = "SELECT first_name, last_name, FROM users WHERE account_id = $account_id";
+
+        if($result = $conn->query($sql)){
+            $full_name = $result->fetch_assoc();
+            return $full_name['first_name'] . " " . $full_name['last_name'];
+        }else{
+            die("Error: " . $conn->error);
+        }
+    }  //END
+
+
+?>
+
+
+
+    //Update User
+    function updateUser($account_id, $first_name, $last_name, $contact_number, $address, $user_name){
+        $conn = connection();
+
+        $sql_users = "UPDATE users SET first_name = '$first_name', last_name = '$last_name', contact_number = '$contact_number', address = '$address',  WHERE account_id = $account_id";
+
+        if($conn->query($sql_users)){
+            $sql_accounts = "UPDATE accounts SET username = '$username' WHERE account_id = $account_id";
+                if($conn->query($sql_accounts)){
+                header("location: users.php");
+                exit;
+            }else{
+                die("Error updating accounts table:" . $conn->error);
+            }
+        }else{
+            die("Error updating users accounts: " . $conn->error);
+        }
+    }
+
+
+
+    if(isset($_POST['btn_update'])){
+        $account_id = $_GET['account_id'];    
+        $first_name = $_POST['first_name'];
+        $last_name = $_POST['last_name'];
+        $contact_number = $_POST['num'];
+        $address = $_POST['address'];
+        $username = $_POST['username'];
+        $password = $_POST['password'];
+        
+
+        updateUser($account_id, $first_name, $last_name, $contact_number, $address);   
+    }

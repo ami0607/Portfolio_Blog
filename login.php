@@ -1,0 +1,52 @@
+<?php
+
+    include "functions/users-functions.php";
+
+    if(isset($_POST['login'])){
+                login();
+            }
+
+?>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" integrity="sha512-KfkfwYDsLkIlwQp6LFnl8zNdLGxu9YAA1QvwINks4PhcElQSvqcyVLLD9aMhXd13uQjoXtEKNosOWaZqXgel0g==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+</head>
+<body>
+
+    <div class="container w-50">
+        <h2 class="text-center display-2">LOGIN</h2>
+
+        <?php
+        
+
+        ?>
+
+
+        <form action="#" method="post">
+            <input type="text" name="username" id="username" placeholder="USERNAME" class="form-control border-3 border-top-0 border-start-0 border-end-0 rounded-0 border-info my-3">
+            <input type="password" name="password" id="password" placeholder="PASSWORD" class="form-control border-3 border-top-0 border-start-0 border-end-0 rounded-0 border-dark my-3">
+            <input type="submit" class="btn btn-success w-100 my-5" value="ENTER" name="login">
+        </form>
+
+        <div class="row text-center">
+            <div class="col-6"><a href="register.php" class="text-dark">Create an Account</a></div>
+            <div class="col-6"><a href="#" class="text-dark">Recover Account</a></div>
+            
+            
+        </div>
+    </div>
+    
+
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
+</body>
+</html>
